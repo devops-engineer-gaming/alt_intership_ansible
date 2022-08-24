@@ -1,0 +1,15 @@
+[Unit]
+Description=Fast API backend for todo.com
+After=network.target
+After=nginx.service
+After=tododb.service
+Requires=tododb.service
+[Service]
+Type=simple
+User=root
+Restart=always
+WorkingDirectory=/home/ansible-slave/Документы/alt_intership_server/app
+ExecStart=/usr/local/bin/uvicorn --reload server:app
+TimeoutSec=600
+[Install]
+WantedBy=multi-user.target

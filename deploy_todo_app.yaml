@@ -1,0 +1,8 @@
+---
+- hosts: all
+  remote_user: root
+  become: true
+  roles:
+    - deploy_database
+    - deploy_api
+    #- deploy_frontend

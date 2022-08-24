@@ -1,0 +1,30 @@
+---
+# tasks file for deploy_api
+- name: Clone repo
+  git:
+    repo: '{{ repo_link }}'
+    dest: '{{ dest_folder }}'
+
+- name: Install pip
+  package:
+    name: pip
+    state: present
+
+- name: Upgrade pip
+  pip:
+    name: pip
+    extra_args: --upgrade
+
+- name: Install requirements
+  pip:
+    requirements: '{{ dest_folder }}/requirements.txt'
+    extra_args: --user
+
+- name: Add api service
+  copy: src=backend.service dest=/etc/systemd/system/
+
+- name: Enable api service
+  service:
+    name: backend.service
+    state: started
+    enabled: yes

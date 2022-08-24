@@ -1,0 +1,48 @@
+---
+
+- name: Clone git repo
+  git:
+    repo: 'https://github.com/meta-lyagushka/alt_intership_dockerdb.git'
+    dest: /home/ansible-slave/Документы
+
+- name: Install Docker
+  block:
+   - name: Remove old versions
+    package:
+      name:
+        - docker
+        - docker-engine
+        - docker.io
+        - containred
+        - runc
+      state: absent
+   - name: Add repo
+     package:
+       name:
+         - ca-certificates
+         - curl
+         - gnupg
+         - lsb-release
+       state: present
+     shell:  |
+       sudo mkdir -p /etc/apt/keyrings
+       curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+       echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \ $(lsb_release -cs) stable"
+       sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+       sudo apt update
+    - name: Install docker pkgs
+      package:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+        state: present
+
+- name: Add database service
+  copy: src=tododb.service dest=/etc/systemd/system/
+  service:
+    name: tododb.service
+    state: started
+    enabled: yes
+

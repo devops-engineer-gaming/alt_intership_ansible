@@ -1,0 +1,13 @@
+[Unit]
+Description=Service for start postgres
+After=network.target
+After=docker
+After=nginx.service
+[Service]
+Type=simple
+User=root
+ExecStart=docker compose -f /home/ansible-slave/Документы/alt_intership_dockerdb/docker-compose.yml up
+ExecStartPost=/bin/sleep 10
+[Install]
+WantedBy=multi-user.target
+TimeoutSec=300

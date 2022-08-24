@@ -1,0 +1,4 @@
+---
+# vars file for deploy_api
+repo_link: 'https://github.com/meta-lyagushka/alt_intership_server.git'
+dest_folder: '/home/ansible-slave/Документы/alt_intership_server'

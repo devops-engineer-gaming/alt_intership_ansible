@@ -1,0 +1,57 @@
+---
+# tasks file for deploy_database
+- name: Install git
+  package:
+    name: git
+    state: present
+
+- name: Clone repo
+  git:
+    repo: 'https://github.com/meta-lyagushka/alt_intership_dockerdb.git'
+    dest: /home/ansible-slave/Документы/alt_intership_dockerdb
+
+- name: Install Docker
+  block:
+   - name: Remove old versions
+     package:
+       name:
+         - docker
+         - docker-engine
+         - docker.io
+         - containred
+         - runc
+       state: absent
+   - name: Install dependiences
+     package:
+       name:
+         - ca-certificates
+         - curl
+         - gnupg
+         - lsb-release
+       state: present
+   - name: Add repo key
+     apt_key:
+       url: https://download.docker.com/linux/debian/gpg
+       state: present
+   - name: Add repo
+     apt_repository:
+       repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+       state: present
+   - name: Install docker pkgs
+     package:
+        update_cache: yes
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+        state: present
+
+- name: Add database service
+  copy: src=tododb.service dest=/etc/systemd/system/
+
+- name: Enable database service
+  service:
+    name: tododb.service
+    state: started
+    enabled: yes
