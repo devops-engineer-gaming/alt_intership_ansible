@@ -7,8 +7,8 @@
 
 - name: Clone repo
   git:
-    repo: 'https://github.com/meta-lyagushka/alt_intership_dockerdb.git'
-    dest: /home/ansible-slave/Документы/alt_intership_dockerdb
+    repo: "{{repo_link}}"
+    dest: "{{dest_folder}}"
 
 - name: Install Docker
   block:
