@@ -1,0 +1,52 @@
+---
+# tasks file for deploy_frontend
+- name: Install dependiences
+  block:
+    - name: Install nvm
+      shell: curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+    - name: Reload term
+      shell: source /home/ansible-slave/.bashrc
+      args:
+        executable: /bin/bash
+    - name: Intsall node.js
+      shell: "source /root/.nvm/nvm.sh && nvm install --lts"
+      args:
+        executable: /bin/bash
+    - name: Install nginx
+      package:
+        name: nginx
+        state: present
+
+- name: Clone repo
+  git:
+    repo: "{{repo_link}}"
+    dest: "{{dest_folder}}"
+
+- name: Install node app dependiences
+  npm:
+    path: "{{dest_folder}}"
+
+- name: Build app
+  command: npm run build
+  args:
+    chdir: "{{dest_folder}}"
+
+- name: Copy build and start nginx
+  block:
+    - name: Copy app dist
+      copy:
+        src: "{{dest_folder}}/dist/"
+        dest: /usr/share/nginx/html/
+    - name: Remove build from src folder
+      file:
+        path: "{{dest_folder}}/dist"
+        state: absent
+    - name: Copy nginx config
+      copy:
+        src: "{{dest_folder}}/nginx.conf"
+        dest: /etc/nginx/
+    - name: Reload nginx
+      service:
+        name: nginx
+        state: restarted
+        enabled: yes

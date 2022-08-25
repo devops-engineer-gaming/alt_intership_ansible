@@ -1,0 +1,4 @@
+---
+# defaults file for deploy_frontend
+repo_link: "https://github.com/meta-lyagushka/alt_intership_front.git"
+dest_folder: "/home/ansible-slave/Документы/alt_intership_front"
