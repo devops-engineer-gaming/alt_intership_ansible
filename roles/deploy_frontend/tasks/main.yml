@@ -37,13 +37,14 @@
       copy:
         src: "{{dest_folder}}/dist/"
         dest: /usr/share/nginx/html/
+        remote_src: yes
     - name: Remove build from src folder
       file:
         path: "{{dest_folder}}/dist"
         state: absent
     - name: Copy nginx config
       copy:
-        src: "{{dest_folder}}/nginx.conf"
+        src: nginx.conf
         dest: /etc/nginx/
     - name: Reload nginx
       service:
