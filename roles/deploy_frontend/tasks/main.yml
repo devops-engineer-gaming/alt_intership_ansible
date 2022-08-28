@@ -12,10 +12,13 @@
       shell: "source /root/.nvm/nvm.sh && nvm install --lts"
       args:
         executable: /bin/bash
-    - name: Install nginx
-      package:
-        name: nginx
-        state: present
+  when:
+    - not "'node' in ansible_facts.packages"
+
+- name: Install nginx
+  package:
+    name: nginx
+    state: present
 
 - name: Clone repo
   git:
